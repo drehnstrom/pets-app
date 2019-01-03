@@ -1,0 +1,31 @@
+{% extends "layout.html" %} {% block content %}
+
+<div class="container">
+	<hr/>
+	<div class="row">
+
+		<form method="post" action="/add" enctype="multipart/form-data">
+			<div class="form-group">
+				<label for="name">Pet Name:</label>
+				<input type="text" class="form-control" id="petname" name="petname">
+			</div>
+			<div class="form-group">
+				<label for="type">Caption:</label>
+				<textarea class="form-control" id="comments" name="caption"></textarea>
+			</div>
+			<div class="form-group">
+				<label for="image">Image</label>
+				<input class="form-control" id="image" name="image" type="file">
+			</div>
+			
+			<input type="hidden" name="email" id="useremail" />
+			<input type="hidden" name="owner" id="username" />
+
+			<button type="submit" class="btn btn-default">Add</button>
+		</form>
+	</div>
+</div>
+
+
+{% endblock %}
+

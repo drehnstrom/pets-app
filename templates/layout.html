@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<title>{{model.title}}</title>
+	<!-- Font Awesome -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+	<!-- Bootstrap core CSS -->
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet">
+	<!-- Material Design Bootstrap -->
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.5.11/css/mdb.min.css" rel="stylesheet">
+
+	<!-- JQuery -->
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<!-- Bootstrap tooltips -->
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js"></script>
+	<!-- Bootstrap core JavaScript -->
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/js/bootstrap.min.js"></script>
+	<!-- MDB core JavaScript -->
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.5.11/js/mdb.min.js"></script>
+</head>
+<body>
+	<!--Main Navigation-->
+	<header>
+		<!--Navbar-->
+		<nav class="navbar navbar-expand-lg navbar-dark primary-color">
+
+			<!-- Navbar brand -->
+			<a class="navbar-brand" href="#">{{model.title}}:<div id="user-name"></div></a>
+
+			<!-- Collapse button -->
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#basicExampleNav" aria-controls="basicExampleNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+  </button>
+
+			<!-- Collapsible content -->
+			<div class="collapse navbar-collapse" id="basicExampleNav">
+
+				<!-- Links -->
+				<ul class="navbar-nav mr-auto">
+					<li class="nav-item">
+						<a class="nav-link" href="/">Home</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="/add">Add Pet</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="/signin">Sign In</a>
+					</li>
+				</ul>
+
+				<form class="form-inline" id="searchform" action="/" method="post">
+					<div class="md-form my-0">
+						<input class="form-control mr-sm-2" type="text" name="search" placeholder="Search" aria-label="Search">
+					</div>
+				</form>
+			</div>
+			
+		</nav>
+		
+	</header>
+
+	<main>
+		{% block content %}{% endblock %}
+	</main>
+
+	<div id="logininfo">
+		<div id="sign-in-status"></div>
+		<div id="sign-in"></div>
+		<div id="account-details"></div>
+	</div>
+
+	<footer>
+	</footer>
+
+
+	<script src="https://www.gstatic.com/firebasejs/5.5.4/firebase.js"></script>
+	<script>
+		// Initialize Firebase
+		var config = {
+			apiKey: "AIzaSyAsgHCj_103CIlaI4i8_rYInzPQS9DDAVE",
+			authDomain: "mypetsgreat.firebaseapp.com",
+			databaseURL: "https://mypetsgreat.firebaseio.com",
+			projectId: "mypetsgreat",
+			storageBucket: "mypetsgreat.appspot.com",
+			messagingSenderId: "1096652448146"
+		};
+		firebase.initializeApp(config);
+	</script>
+
+	<script src="https://www.gstatic.com/firebasejs/5.5.4/firebase-auth.js"></script>
+	<script src="https://cdn.firebase.com/libs/firebaseui/3.4.1/firebaseui.js"></script>
+	<link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/3.4.1/firebaseui.css" />
+
+	<script type="text/javascript">
+		// FirebaseUI config.
+		var uiConfig = {
+			signInSuccessUrl: '/',
+			signInOptions: [
+				// Leave the lines as is for the providers you want to offer your users.
+				firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+				firebaseui.auth.AnonymousAuthProvider.PROVIDER_ID
+			],
+			// tosUrl and privacyPolicyUrl accept either url string or a callback
+			// function.
+			// Terms of service url/callback.
+			tosUrl: '/',
+			// Privacy policy url/callback.
+			privacyPolicyUrl: function() {
+				window.location.assign('/');
+			}
+		};
+
+		// Initialize the FirebaseUI Widget using Firebase.
+		var ui = new firebaseui.auth.AuthUI(firebase.auth());
+		// The start method will wait until the DOM is loaded.
+		ui.start('#firebaseui-auth-container', uiConfig);
+	</script>
+
+	<script type="text/javascript">
+		initApp = function() {
+			firebase.auth().onAuthStateChanged(function(user) {
+				if (user) {
+					// User is signed in.
+					var displayName = user.displayName;
+					if (!displayName) displayName = "Guest";
+					var email = user.email;
+					if (!email) email = "none";
+					var emailVerified = user.emailVerified;
+					var photoURL = user.photoURL;
+					var uid = user.uid;
+					var phoneNumber = user.phoneNumber;
+					var providerData = user.providerData;
+					user.getIdToken().then(function(accessToken) {
+
+						document.getElementById('sign-in-status').textContent = 'Signed in';
+						document.getElementById('sign-in').textContent = 'Sign out';
+						document.getElementById('account-details').textContent = JSON.stringify({
+							displayName: displayName,
+							email: email,
+							emailVerified: emailVerified,
+							phoneNumber: phoneNumber,
+							photoURL: photoURL,
+							uid: uid,
+							accessToken: accessToken,
+							providerData: providerData
+						}, null, '  ');
+
+						document.getElementById('user-name').textContent = displayName;
+						if (document.getElementById('useremail')) document.getElementById('useremail').value = email;
+						if (document.getElementById('username')) document.getElementById('username').value = displayName;
+
+
+					});
+				} else {
+					// User is signed out.
+					document.getElementById('sign-in-status').textContent = 'Signed out';
+					document.getElementById('sign-in').textContent = 'Sign in';
+					document.getElementById('account-details').textContent = 'null';
+					document.getElementById('user-name').textContent = 'Guest';
+
+					if (document.getElementById('useremail')) document.getElementById('useremail').value = 'none';
+					if (document.getElementById('username')) document.getElementById('username').value = 'Guest';
+
+				}
+			}, function(error) {
+				console.log(error);
+			});
+		};
+
+		window.addEventListener('load', function() {
+			initApp();
+		});
+	</script>
+	
+	<!-- Just Toggles the Login Info for testing -->
+	<script>
+		document.getElementById('logininfo').style.display = 'none';
+	</script>
+</body>
+</html>

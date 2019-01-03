@@ -1,0 +1,46 @@
+{% extends "layout.html" %} {% block content %}
+
+<div class="container">
+	<hr/>
+	<div class="row">
+		{% for pet in model.pets %}
+		<!--Card-->
+		<div class="col-lg-4 col-md-12 mb-4">
+			<div class="card">
+				<!--Card image-->
+				<div class="view overlay hm-white-slight">
+					<img src="{{pet['image']}}" class="img-fluid" alt="">
+					<a href="{{pet['image']}}">
+						<div class="mask"></div>
+					</a>
+				</div>
+				<!--Card content-->
+				<div class="card-body">
+					<!--Title-->
+					<h4 class="card-title">{{pet['petname']}}</h4>
+					<!--Text-->
+					<p class="card-text">{{pet['caption']}}</p>
+					<p class="card-text">{{pet['owner']}}</p>
+					<div><span class="like" id="{{pet.key.name}}">&#128077;</span></div>
+					<div><span class="like" id="like-{{pet.key.name}}">Likes: {{pet['likes']}}</span></div>
+				</div>
+			</div>
+		</div>
+		<!--/.Card-->
+		{% endfor %}
+	</div>
+</div>
+
+<script>
+	$(".like").css( 'cursor', 'pointer' ).click(function(){   	
+    	var url = "/api/like/" + this.id;
+    	$.get(url, function(data, status){
+        	var response = JSON.parse(data);
+        	var likeID = "like-" + JSON.parse(data).pet_id;
+        	document.getElementById(likeID).innerHTML = "Likes: " + response.likes;
+    });
+});
+
+</script>
+
+{% endblock %}

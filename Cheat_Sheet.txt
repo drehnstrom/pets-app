@@ -1,0 +1,45 @@
+# Needed for Cloud Shell
+sudo pip3 install Flask
+
+# Start the Program
+python3 main.py
+
+# Test Like function
+/api/like/070bd6c9-0fe2-4f66-b575-35102e0d8ef3
+
+
+# Deploy to App Engine
+gcloud app deploy --version=five --no-promote
+
+# Docker Commands for Testing
+docker build -t mypetsgreat/petsbook:v1.0 .
+
+# Run Docker image on Cloud Shell  
+docker run -d -p 8080:8080 mypetsgreat/petsbook:v1.0
+
+# Kubernetes Commands
+
+# Build
+gcloud builds submit --tag gcr.io/mypetsgreat/petsbook:v1.0 .
+
+# See the built Image and its Tags
+gcloud container images list
+gcloud container images list-tags gcr.io/mypetsgreat/petsbook
+
+
+#grab Docker Image from gcr.io
+docker pull gcr.io/mypetsgreat/petsbook:v1.0
+
+
+# run locally with gcr.io image
+docker run -d -p 8080:8080 gcr.io/mypetsgreat/petsbook:v1.0
+
+
+# Create a Kubernetes Cluster
+gcloud beta container clusters create "pets-cluster" --project "mypetsgreat" --zone=us-central1-a --preemptible --scopes "https://www.googleapis.com/auth/cloud-platform"
+
+
+# Connect to Kubernetes
+gcloud container clusters get-credentials pets-cluster --zone us-central1-a --project mypetsgreat 
+
+kubectl create -f kubernetes_config.yaml --validate=false
