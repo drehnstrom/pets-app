@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
       - name: mypetsgreat
-        image: gcr.io/mypetsgreat/petsbook:v1.0
+        image: gcr.io/doug-rehnstrom/petsbook:v1.0
         ports:
         - containerPort: 8080
         resources:

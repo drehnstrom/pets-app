@@ -11,35 +11,35 @@ python3 main.py
 # Deploy to App Engine
 gcloud app deploy --version=five --no-promote
 
-# Docker Commands for Testing
-docker build -t mypetsgreat/petsbook:v1.0 .
+# Docker Commands for Testing - Change drehnstrom to your Docker ID
+docker build -t drehnstrom/petsbook:v1.0 .
 
-# Run Docker image on Cloud Shell  
-docker run -d -p 8080:8080 mypetsgreat/petsbook:v1.0
+# Run Docker image on Cloud Shell - Change drehnstrom to your Docker ID 
+docker run -d -p 8080:8080 drehnstrom/petsbook:v1.0
 
 # Kubernetes Commands
 
-# Build
-gcloud builds submit --tag gcr.io/mypetsgreat/petsbook:v1.0 .
+# Build - Change doug-rehnstrom to your GCP Project ID
+gcloud builds submit --tag gcr.io/doug-rehnstrom/petsbook:v1.0 .
 
-# See the built Image and its Tags
+# See the built Image and its Tags - Change doug-rehnstrom to your GCP Project ID
 gcloud container images list
-gcloud container images list-tags gcr.io/mypetsgreat/petsbook
+gcloud container images list-tags gcr.io/doug-rehnstrom/petsbook
 
 
-#grab Docker Image from gcr.io
-docker pull gcr.io/mypetsgreat/petsbook:v1.0
+# Grab Docker Image from gcr.io - Change doug-rehnstrom to your GCP Project ID
+docker pull gcr.io/doug-rehnstrom/petsbook:v1.0
 
 
-# run locally with gcr.io image
-docker run -d -p 8080:8080 gcr.io/mypetsgreat/petsbook:v1.0
+# run locally with gcr.io image - Change doug-rehnstrom to your GCP Project ID
+docker run -d -p 8080:8080 gcr.io/doug-rehnstrom/petsbook:v1.0
 
 
-# Create a Kubernetes Cluster
-gcloud beta container clusters create "pets-cluster" --project "mypetsgreat" --zone=us-central1-a --preemptible --scopes "https://www.googleapis.com/auth/cloud-platform"
+# Create a Kubernetes Cluster  - Change doug-rehnstrom to your GCP Project ID
+gcloud beta container clusters create "pets-cluster" --project "doug-rehnstrom" --zone=us-central1-a --preemptible --scopes "https://www.googleapis.com/auth/cloud-platform"
 
 
-# Connect to Kubernetes
-gcloud container clusters get-credentials pets-cluster --zone us-central1-a --project mypetsgreat 
+# Connect to Kubernetes  - Change doug-rehnstrom to your GCP Project ID
+gcloud container clusters get-credentials pets-cluster --zone us-central1-a --project doug-rehnstrom 
 
 kubectl create -f kubernetes_config.yaml --validate=false
