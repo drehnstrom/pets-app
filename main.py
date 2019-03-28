@@ -16,7 +16,7 @@ import pet_storage
 def main():
 	if request.method == 'GET':
 		pets = pet_db.get_pets()
-		model = {"title": "My Pet's Great!!!","header":"Some Pets","pets":pets}
+		model = {"title": "My Pet's Super-Great!!!","header":"Some Pets","pets":pets}
 		print('Pets Home Page Requested!')
 		
 		
