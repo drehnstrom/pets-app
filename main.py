@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect
 import uuid
 import json
+import os
 
 BUCKET_NAME = 'doug-rehnstrom-pets'
 PROJECT_NAME = 'doug-rehnstrom'
@@ -79,4 +80,4 @@ def test():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8080, debug=True)
+    app.run(debug=True, host='0.0.0.0', port=int(os.environ.get('PORT', 8080)))
