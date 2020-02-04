@@ -2,6 +2,9 @@ from flask import Flask, render_template, request, redirect
 import uuid
 import json
 import os
+import googlecloudprofiler
+import googleclouddebugger
+
 
 BUCKET_NAME = 'doug-rehnstrom-pets'
 PROJECT_NAME = 'doug-rehnstrom'
@@ -32,6 +35,7 @@ def main():
 def add():
     if request.method == 'GET':
         model = {"title": "My Pet's Great", "header": "Add a Pet"}
+        print('Pets Add Page Requested!')
         return render_template('add.html', model=model)
 
     if request.method == 'POST':
@@ -65,18 +69,37 @@ def like(pet_id):
 def error(message):
     model = {"title": "My Pet's Great", 
              "header": "An Error Occured!", "message": message}
+    print(message)
     return render_template('error.html', model=model)
 
 
 @app.route("/signin")
 def signin():
     model = {"title": "My Pet's Great", "header": "Sign In"}
+    print('Pets Signin Page Requested!')
     return render_template('signin.html', model=model)
 
 
 @app.route("/test")
 def test():
+    print('Pets test route Requested!')
     return render_template('test.html')
+
+
+# Profiler initialization. It starts a daemon thread which continuously
+# collects and uploads profiles. Best done as early as possible.
+try:
+    googlecloudprofiler.start(verbose=3)
+except (ValueError, NotImplementedError) as exc:
+    print(exc)  # Handle errors here
+except Exception:
+    pass
+
+# Enable's the Debugger.
+try:
+    googleclouddebugger.enable()
+except (ImportError, RuntimeError, RuntimeError, Exception) as ext:
+    pass
 
 
 if __name__ == '__main__':

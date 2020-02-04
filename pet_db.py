@@ -36,11 +36,11 @@ def search_pets(search_term):
     job_config = bigquery.QueryJobConfig()
     job_config.query_parameters = query_params
 
-    query_job = bigquery_client.query("""SELECT DISTINCT pet_id  FROM `pets_dataset.pet_labels` WHERE REGEXP_CONTAINS(label, @search_term) LIMIT 20 """,
+    query_job = bigquery_client.query("""SELECT DISTINCT pet_id  FROM `pets_dataset.pet_labels` WHERE REGEXP_CONTAINS(LOWER(label), @search_term) LIMIT 20 """,
     location='US',
     job_config=job_config)
 
-    results = query_job.result() 
+    results = query_job.result()
     keys = []
     for row in results:
         key = datastore_client.key("Pet", row.pet_id)

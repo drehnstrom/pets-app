@@ -1,6 +1,9 @@
-Flask==1.0.2
-google-cloud==0.27.0
-google-cloud-core==0.28.1
-google-cloud-datastore==1.7.0
-google-cloud-storage==1.13.0
-google-cloud-bigquery==1.6.0
+Flask
+google-cloud
+google-cloud-core
+google-cloud-datastore
+google-cloud-storage
+google-cloud-bigquery
+google-cloud-profiler
+google-python-cloud-debugger
+grpcio
