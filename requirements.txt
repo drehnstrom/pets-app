@@ -6,4 +6,8 @@ google-cloud-storage
 google-cloud-bigquery
 google-cloud-profiler
 google-python-cloud-debugger
+google-cloud-error-reporting
+google-cloud-trace
+opencensus
+opencensus-ext-stackdriver
 grpcio

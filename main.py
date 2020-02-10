@@ -2,8 +2,12 @@ from flask import Flask, render_template, request, redirect
 import uuid
 import json
 import os
+import random
 import googlecloudprofiler
 import googleclouddebugger
+from google.cloud import error_reporting
+from opencensus.ext.stackdriver import trace_exporter as stackdriver_exporter
+import opencensus.trace.tracer
 
 
 BUCKET_NAME = 'doug-rehnstrom-pets'
@@ -28,7 +32,18 @@ def main():
         model = {"title": "My Pet's Great", 
                  "header": "Some Pets!", "pets": pets}
         print('Search Requested: ' + data['search'])
-    return render_template('index.html', model=model)
+
+    # Throm Randoms Errors approx 2% of the time
+    # Raise unhandled exception 2% of the time
+    num = random.randrange(49)
+    if num == 0:
+        client = error_reporting.Client()
+        client.report("Threw 500 error randomly.")
+        return json.dumps({"error": 'Error thrown randomly'}), 500
+    elif num == 1:
+        raise Exception("This was an unhandled exception")
+    else:
+        return render_template('index.html', model=model)
 
 
 @app.route("/add", methods=['GET', 'POST'])
@@ -44,10 +59,14 @@ def add():
             image_file = request.files['image']
             image_name = str(uuid.uuid4())
             # Save the Pet Photo
+            if os.getenv('GAE_ENV', '').startswith('standard'):
+                tracer.start_span(name='save_pet')
             pic_url = pet_storage.save_pet_picture(image_file, image_name)
             print('Pet photo saved:{}'.format(pic_url))
             pet_db.save_pet(data, image_name)
             print('Pet info saved:{}'.format(data))
+            if os.getenv('GAE_ENV', '').startswith('standard'):
+                tracer.end_span()
             return redirect('/')
         except Exception as ex:
             print('An error occurred while saving a pet'.format(str(ex)))
@@ -86,6 +105,22 @@ def test():
     return render_template('test.html')
 
 
+@app.route("/randomerror")
+def randomError():
+    print('Random Error Occurred')
+    client = error_reporting.Client()
+    client.report("randomerror route called")
+    return json.dumps({"error": 'Server Error'}), 500
+
+
+@app.route("/throw")
+def throw():
+    print('Threw an exception on purpose.')
+    client = error_reporting.Client()
+    client.report("throw route called")
+    raise Exception('Threw this exception on purpose.')
+
+
 # Profiler initialization. It starts a daemon thread which continuously
 # collects and uploads profiles. Best done as early as possible.
 try:
@@ -100,6 +135,12 @@ try:
     googleclouddebugger.enable()
 except (ImportError, RuntimeError, RuntimeError, Exception) as ext:
     pass
+
+# Initialize tracer - Only do this in GCP
+if os.getenv('GAE_ENV', '').startswith('standard'):
+    exporter = stackdriver_exporter.StackdriverExporter(project_id=PROJECT_NAME)
+    tracer = opencensus.trace.tracer.Tracer(exporter=exporter,
+                                        sampler=opencensus.trace.tracer.samplers.AlwaysOnSampler())
 
 
 if __name__ == '__main__':
