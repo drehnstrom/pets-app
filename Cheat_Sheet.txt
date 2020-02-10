@@ -7,6 +7,9 @@ python3 main.py
 # Test Like function
 /api/like/070bd6c9-0fe2-4f66-b575-35102e0d8ef3
 
+# Loop to make requests with 0 to 1 second delay
+while true; do curl -s https://pets.drehnstrom.com/ | grep "<title>";sleep .$[( $RANDOM % 10 )]s;done
+
 
 # Deploy to App Engine
 gcloud app deploy --version=five --no-promote

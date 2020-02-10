@@ -23,7 +23,7 @@ app = Flask(__name__)
 def main():
     if request.method == 'GET':
         pets = pet_db.get_pets()
-        model = {"title": "My Pet's Great", "header": "Some Pets", "pets": pets}
+        model = {"title": "Pets App", "header": "Some Pets", "pets": pets}
         print('Pets Home Page Requested!')
 
     if request.method == 'POST':
@@ -49,7 +49,7 @@ def main():
 @app.route("/add", methods=['GET', 'POST'])
 def add():
     if request.method == 'GET':
-        model = {"title": "My Pet's Great", "header": "Add a Pet"}
+        model = {"title": "Pets App", "header": "Add a Pet"}
         print('Pets Add Page Requested!')
         return render_template('add.html', model=model)
 
@@ -86,7 +86,7 @@ def like(pet_id):
 
 @app.route("/error/<message>")
 def error(message):
-    model = {"title": "My Pet's Great", 
+    model = {"title": "Pets App",
              "header": "An Error Occured!", "message": message}
     print(message)
     return render_template('error.html', model=model)
@@ -94,7 +94,7 @@ def error(message):
 
 @app.route("/signin")
 def signin():
-    model = {"title": "My Pet's Great", "header": "Sign In"}
+    model = {"title": "Pets App", "header": "Sign In"}
     print('Pets Signin Page Requested!')
     return render_template('signin.html', model=model)
 
