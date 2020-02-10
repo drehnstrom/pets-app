@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
       - name: mypetsgreat
-        image: gcr.io/doug-rehnstrom/pets-app:0c15440
+        image: gcr.io/doug-rehnstrom/pets-app:9ffc34a
         env:
         - name: PORT
           value: "8080"

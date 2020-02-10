@@ -3,6 +3,7 @@ import uuid
 import json
 import os
 import random
+from time import sleep
 import googlecloudprofiler
 import googleclouddebugger
 from google.cloud import error_reporting
@@ -21,6 +22,9 @@ app = Flask(__name__)
 
 @app.route("/", methods=['GET', 'POST'])
 def main():
+    # Adds artificial delay between 0 and 1000 ms
+    pause()
+
     if request.method == 'GET':
         pets = pet_db.get_pets()
         model = {"title": "Pets App", "header": "Some Pets", "pets": pets}
@@ -29,7 +33,7 @@ def main():
     if request.method == 'POST':
         data = request.form.to_dict(flat=True)
         pets = pet_db.search_pets(data['search'])
-        model = {"title": "My Pet's Great", 
+        model = {"title": "Pets App",
                  "header": "Some Pets!", "pets": pets}
         print('Search Requested: ' + data['search'])
 
@@ -101,6 +105,8 @@ def signin():
 
 @app.route("/test")
 def test():
+    # Adds artificial delay between 0 and 1000 ms
+    pause()
     print('Pets test route Requested!')
     return render_template('test.html')
 
@@ -141,6 +147,11 @@ if os.getenv('GAE_ENV', '').startswith('standard'):
     exporter = stackdriver_exporter.StackdriverExporter(project_id=PROJECT_NAME)
     tracer = opencensus.trace.tracer.Tracer(exporter=exporter,
                                         sampler=opencensus.trace.tracer.samplers.AlwaysOnSampler())
+
+
+def pause():
+    num = random.randint(1, 1000) / 1000
+    sleep(num)
 
 
 if __name__ == '__main__':
